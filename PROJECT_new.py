@@ -1,10 +1,13 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import warnings
 
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main():                                        #Kύρια δομή Προγράμματος
     plt.style.use('seaborn-v0_8')
+    pd.set_option("expand_frame_repr", False)       # Για να μην αποκρύπτονται τυχών γραμμές ή στείλες του dataframe
 
     url = "https://raw.githubusercontent.com/Sandbird/covid19-Greece/master/cases.csv"
     df = pd.read_csv(url)
@@ -100,13 +103,14 @@ def pie_1(df):
     plt.show()
 
 def pie_2(df):
-    tot_dom =  df.iloc[-1,25]
-    tot_forgn = df.iloc[-1,24]
-
-    naming = 'Συνολικά Εγχώρια Κρούσματα','Συνολικά Ξένα Κρούσματα'
-    plt.pie([tot_dom,tot_forgn],labels=naming,autopct='%1.1f%%')
-    plt.title("Ποσοστά Συνολικών Εγχωρίων και Ξένων Κρουσμάτων")
+    naming = 'Εμβολιασμένοι', 'Ανεμβολίαστοι', 'Συνολικοί'
+    x = df['total_vaccinated_crit'].sum()
+    y = df['total_unvaccinated_crit'].sum()
+    z = df['total_critical'].sum()
+    plt.pie([x,y,z], labels=naming, autopct='%1.1f%%')
+    plt.title("Συνολικά Ποσοστά Ανθρώπων Σε Κρίσιμη Κατάσταση")
     plt.show()
+
 
 def hospitalized(df):
     hospital = df.loc[df['hospitalized']>0]
